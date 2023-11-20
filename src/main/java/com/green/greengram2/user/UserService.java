@@ -21,7 +21,7 @@ public class UserService {
             vo.setResult(2);
             return vo;
         } else if(!BCrypt.checkpw(dto.getUpw(), savedVo.getUpw())) {
-            vo.setResult(3);
+            vo.setResult(3); //checkpw(password, hashedPassword),boolean 타입으로 비밀번호와 암호화된 비밀번호를 인자로 받아 같을 경우 true, 다를 경우 false를 반환한다.
             return vo;
         }
         vo.setResult(1);
