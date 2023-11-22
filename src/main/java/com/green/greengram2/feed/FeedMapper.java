@@ -11,6 +11,5 @@ import java.util.List;
 @Mapper
 public interface FeedMapper {
     int insFeed(FeedInsProcDto dto);
-
     List<FeedSelVo> selFeedAll(FeedSelDto dto);
 }

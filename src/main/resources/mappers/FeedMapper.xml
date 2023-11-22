@@ -3,23 +3,21 @@
 <mapper namespace="com.green.greengram2.feed.FeedMapper">
     <insert id="insFeed" useGeneratedKeys="true" keyProperty="ifeed">
         INSERT INTO t_feed
-        SET iuser = #{iuser}
-        , contents = #{contents}
-        , location = #{location}
+        <set>
+            iuser = #{iuser}
+            <if test=" contents != null and contents != '' ">
+                , contents = #{contents}
+            </if>
+            <if test=" location != null and location != '' ">
+                , location = #{location}
+            </if>
+        </set>
     </insert>
 
-    <insert id="feedPicIns">
-        INSERT INTO t_feed_pics
-        (ifeed, pic)
-        VALUES
-        <foreach collection="pics" item="pic" open="(" close=")" separator="),(">
-            #{ifeed}, #{pic}
-        </foreach>
-    </insert>
-    
     <select id="selFeedAll">
         SELECT A.ifeed, A.contents, A.location
         , A.created_at AS createdAt, if(C.ifeed IS NULL, 0, 1) AS isFav
+        , B.pic as writerPic
         , B.iuser AS writerIuser, B.nm AS writerNm
         FROM t_feed A
         INNER JOIN t_user B

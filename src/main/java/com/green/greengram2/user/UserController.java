@@ -1,9 +1,7 @@
 package com.green.greengram2.user;
 
 import com.green.greengram2.ResVo;
-import com.green.greengram2.user.model.UserSigninDto;
-import com.green.greengram2.user.model.UserSigninVo;
-import com.green.greengram2.user.model.UserSignupDto;
+import com.green.greengram2.user.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -44,5 +42,25 @@ public class UserController {
         log.info("dto: {}", dto);       // @Slf4j기능,  타입지정 안해도됨
         return service.userSignup(dto);  //ResVo객체에 insert한 레코드 pk값을 담아서 응답처리
     }
+
+    //get) /api/user?iuser=3 > 받는 변수명은 int targetIuser
+
+
+
+    @GetMapping                                     ///api/user?target_iuser=8 쿼리스트링
+    @Operation(summary = "유저 정보", description = "프로필 화면에서 사용할 프로필 유저 정보")
+    public UserInfoVo getUserInfo (@RequestParam("target_iuser") int targetIuser) {
+        log.info("targetIuser : {}", targetIuser);
+
+        return service.getUserInfo(targetIuser);
+    }
+
+
+    //수정 성공 시 result: 1, 수정 실패 result: 0
+    @PatchMapping("/pic")
+    public ResVo patchUserProfile(@RequestBody UserPatchPicDto dto) {
+        return service.patchUserProfile(dto);
+    }
 }
+
 // logback설

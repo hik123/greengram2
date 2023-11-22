@@ -45,6 +45,16 @@ public class UserService {
         }
         return new ResVo(pDto.getIuser());
     }
+
+    public UserInfoVo getUserInfo(int iuser) {
+        return mapper.selFeedFavNum(iuser);
+    }
+
+    //수정 성공 시 result: 1, 수정 실패 result: 0
+    public ResVo patchUserProfile(UserPatchPicDto dto) {
+        int affectedRow = mapper.feedProfileUpdate(dto);
+        return new ResVo(affectedRow);
+    }
 }
 
     /*

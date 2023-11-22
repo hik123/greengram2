@@ -2,10 +2,7 @@ package com.green.greengram2.feed;
 
 
 import com.green.greengram2.ResVo;
-import com.green.greengram2.feed.model.FeedInsDto;
-import com.green.greengram2.feed.model.FeedInsProcDto;
-import com.green.greengram2.feed.model.FeedSelDto;
-import com.green.greengram2.feed.model.FeedSelVo;
+import com.green.greengram2.feed.model.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +15,8 @@ import java.util.List;
 public class FeedService {
     private final FeedMapper mapper;
     private final FeedPicsMapper picsMapper;
+    private final FeedFavMapper favMapper;
+    private final FeedCommentMapper commMapper;
 
     public ResVo postFeed(FeedInsDto dto) {
         if(dto.getPics().size() == 0) {
@@ -45,8 +44,44 @@ public class FeedService {
         for(FeedSelVo vo : list) {
             List<String> pics = picsMapper.selFeedPicsAll(vo.getIfeed());
             vo.setPics(pics);
+
+            List<FeedCommentSelVo> comments = commMapper.selCommentAll(FeedCommentSelDto.builder()
+                    .ifeed(vo.getIfeed())
+                    .startIdx(0)
+                    .rowCount(4)
+                    .build());
+            if(comments.size() == 4) {
+                vo.setIsMoreComment(1);
+                comments.remove(comments.size() - 1);
+            }
+            vo.setComments(comments);
+
         }
         return list;
     }
 
+
+    public ResVo toggleFav (FeedFavDto dto) {           //연산 작업 service에서
+        int affectedRow = favMapper.delFav(dto);
+        if(affectedRow == 1) {
+            return new ResVo(0); // delete 됐을때 0 리턴
+        } else if(affectedRow == 0) {
+            favMapper.insFav(dto);
+            return new ResVo(1); // insert 됐을때 1 리턴
+        }
+        return null;
+    }
+
+    //ResVo result 값이 insert일때 1 , delete일때 2
+    //없으면 insert 있으면 삭제
+
+    public ResVo insFeedComment(FeedCommentInsDto dto) {
+        try {
+            int affectedRow = commMapper.insFeedComment(dto);
+            return new ResVo(affectedRow);
+        }
+        catch (Exception e) {
+            return new ResVo(0);
+        }
+    }
 }
