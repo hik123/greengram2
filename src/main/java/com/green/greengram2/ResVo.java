@@ -2,10 +2,9 @@ package com.green.greengram2;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 
-@Getter
+@Data
 @AllArgsConstructor
 public class ResVo {
-    public int result;
+    private int result;
 }

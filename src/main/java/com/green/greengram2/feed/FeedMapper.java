@@ -1,6 +1,5 @@
 package com.green.greengram2.feed;
 
-import com.green.greengram2.feed.model.FeedInsDto;
 import com.green.greengram2.feed.model.FeedInsProcDto;
 import com.green.greengram2.feed.model.FeedSelDto;
 import com.green.greengram2.feed.model.FeedSelVo;

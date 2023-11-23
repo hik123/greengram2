@@ -6,7 +6,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FeedCommentSelVo {
-    private int ifeed;
-    private int startIdx;
-    private int rowCount;
+    private int ifeedComment;
+    private String comment;
+    private int writerIuser;
+    private String createdAt;
+    private String writerNm;
+    private String writerPic;
 }

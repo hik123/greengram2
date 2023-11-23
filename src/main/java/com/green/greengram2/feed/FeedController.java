@@ -1,12 +1,12 @@
 package com.green.greengram2.feed;
 
-
 import com.green.greengram2.ResVo;
 import com.green.greengram2.feed.model.*;
-import com.green.greengram2.user.model.UserInfoVo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,46 +35,62 @@ public class FeedController {
         return service.postFeed(dto);
     }
 
-
-    @Operation(summary = "피드 리스트", description = "전체 피드 리스트, 특정 사용자 프로필 화면에서 사용할 피드 리스트")
-    @Parameters(value = {
-              @Parameter(name="page", description = "페이징")
-            , @Parameter(name="loginedIuser", description = "loginedIuser")
-            , @Parameter(name="targetIuser", description = "targetIuser")
-    })
     @GetMapping
+    @Operation(summary = "피드 리스트", description = "전체 피드 리스트, 특정 사용자 프로필 화면에서 사용할 피드 리스트, 한 페이지 30개 피드 가져옴")
+    @Parameters(value = {
+            @Parameter(name="page", description = "page값")
+            , @Parameter(name="loginedIuser", description = "로그인 유저 pk")
+            , @Parameter(name="targetIuser", description = "(생략가능) 특정 사용자 프로필 화면의 주인 유저 pk")
+    })
     public List<FeedSelVo> getFeedAll(int page, int loginedIuser
             , @RequestParam(required=false, defaultValue="0") int targetIuser) {
         log.info("targetIuser : {}", targetIuser);
         final int ROW_COUNT = 30;
 
         return service.getFeedAll(FeedSelDto.builder()
-                .loginedIuser(loginedIuser)
-                .targetIuser(targetIuser)
-                .startIdx((page-1) * ROW_COUNT)
-                .rowCount(ROW_COUNT)
-                .build());
+                        .loginedIuser(loginedIuser)
+                        .targetIuser(targetIuser)
+                        .startIdx((page-1) * ROW_COUNT)
+                        .rowCount(ROW_COUNT)
+                        .build());
     }
 
-
-    @Operation(summary = "좋아요 처리", description = "Toggle로 처리함")
+    //ResVo-result = insert: 1, delete: 0
+    @GetMapping("/fav")
+    @Operation(summary = "좋아요 처리", description = "Toggle로 처리함<br>")
     @Parameters(value = {
-            @Parameter(name = "ifeed", description = "feed pk")
-            , @Parameter(name = "iuser", description = "로그인한 유저 pk")
+            @Parameter(name="ifeed", description = "feed pk")
+            , @Parameter(name="iuser", description = "로그인한 유저 pk")
     })
-
-    @GetMapping("/fav")  // 쿼리스트링 사용 >> ///localhost:8082/api/feed/fav?ifeed=6&iuser=9
-    public ResVo toggleFav(FeedFavDto dto) {
-        log.info("dto: {}", dto);
-        return service.toggleFav(dto);
-        //ResVo result 값이 insert일때 1 , delete일때 0
-        //없으면 insert 있으면 삭제
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "좋아요 처리: result(1), 좋아요 취소: result(2)")
+    })
+    public ResVo toggleFeedFav(FeedFavDto dto) {
+        log.info("dto : {}", dto);
+        return service.toggleFeedFav(dto);
     }
 
     @PostMapping("/comment")
-    public ResVo insFeedComment (@RequestBody FeedCommentInsDto dto){
-        return service.insFeedComment(dto);
+    public ResVo postComment(@RequestBody FeedCommentInsDto dto) {
+        log.info("dto : {}", dto);
+        return service.postComment(dto);
     }
 
+    @GetMapping("/comment")
+    public List<FeedCommentSelVo> getCommentAll(int ifeed) {
+        return service.getCommentAll(ifeed);
+    }
 
+    @DeleteMapping("/comment")
+    public ResVo delComment(@RequestParam("ifeed_comment") int ifeedComment
+                        , @RequestParam("logined_iuser") int loginedIuser) {
+        log.info("ifeedComment: {}, loginedIuser: {}", ifeedComment, loginedIuser);
+
+        return service.delComment(FeedCommentDelDto.builder()
+                                                   .ifeedComment(ifeedComment)
+                                                   .loginedIuser(loginedIuser)
+                                                   .build());
+
+
+    }
 }

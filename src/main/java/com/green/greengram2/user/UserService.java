@@ -11,17 +11,17 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    public final UserMapper mapper;
+    private final UserMapper mapper;
 
     public UserSigninVo userSignin(UserSigninDto dto) {
         UserSigninProcVo savedVo = mapper.selUserForSignin(dto);
 
         UserSigninVo vo = new UserSigninVo();
-        if(savedVo == null) {
+        if(savedVo == null) { //아이디 없음
             vo.setResult(2);
             return vo;
         } else if(!BCrypt.checkpw(dto.getUpw(), savedVo.getUpw())) {
-            vo.setResult(3); //checkpw(password, hashedPassword),boolean 타입으로 비밀번호와 암호화된 비밀번호를 인자로 받아 같을 경우 true, 다를 경우 false를 반환한다.
+            vo.setResult(3);
             return vo;
         }
         vo.setResult(1);
@@ -30,6 +30,7 @@ public class UserService {
         vo.setPic(savedVo.getPic());
         return vo;
     }
+
     public ResVo userSignup(UserSignupDto dto) {
         String hashedPw = BCrypt.hashpw(dto.getUpw(), BCrypt.gensalt());
         log.info("hashedPw : {}", hashedPw);
@@ -46,37 +47,12 @@ public class UserService {
         return new ResVo(pDto.getIuser());
     }
 
-    public UserInfoVo getUserInfo(int iuser) {
-        return mapper.selFeedFavNum(iuser);
+    public UserInfoVo getUserInfo(int targetIuser) {
+        return mapper.selUserInfo(targetIuser);
     }
 
-    //수정 성공 시 result: 1, 수정 실패 result: 0
-    public ResVo patchUserProfile(UserPatchPicDto dto) {
-        int affectedRow = mapper.feedProfileUpdate(dto);
-        return new ResVo(affectedRow);
+    public ResVo patchUserPic(UserPatchPicDto dto) {
+        int affective = mapper.patchUserPic(dto);
+        return new ResVo(affective);
     }
 }
-
-    /*
-    public ResVo userSignup(UserSignupDto dto) {
-        String hashedPw = BCrypt.hashpw(dto.getUpw(), BCrypt.gensalt());
-        log.info("hashedPw : ", hashedPw);
-        dto.setUpw(hashedPw);
-
-
-        //UserSignupVo pDto = UserSignupVo.builder()
-                .uid(dto.getUid())
-                .upw(hashedPw)
-                .nm(dto.getNm())
-                .pic(dto.getPic())
-                .build();
-        //return ;
-
-
-        UserSignupProcDto vo = new UserSignupProcDto(dto);
-        mapper.userSignup(vo);
-        ResVo rv = new ResVo(vo.getIuser());
-        return rv;
-    }
-     */
-

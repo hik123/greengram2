@@ -1,6 +1,5 @@
 package com.green.greengram2.common;
 
-
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -12,7 +11,7 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
-                .components(new Components()) //스웨거에서 로그인처리할때 사용?
+                .components(new Components())
                 .info(apiInfo());
     }
 

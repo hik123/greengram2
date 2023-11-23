@@ -5,8 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface UserMapper {
-    int insUser(UserSignupProcDto vo);
+    int insUser(UserSignupProcDto dto);
     UserSigninProcVo selUserForSignin(UserSigninDto dto);
-    UserInfoVo selFeedFavNum(int iuser);
-    int feedProfileUpdate(UserPatchPicDto dto);
+    UserInfoVo selUserInfo(int targetIuser);
+    int patchUserPic(UserPatchPicDto dto);
 }
