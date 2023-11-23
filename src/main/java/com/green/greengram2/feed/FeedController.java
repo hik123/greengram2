@@ -90,7 +90,24 @@ public class FeedController {
                                                    .ifeedComment(ifeedComment)
                                                    .loginedIuser(loginedIuser)
                                                    .build());
+    }
 
+    @DeleteMapping  // 피드가 내가쓴글이 맞다면 삭제
+    public ResVo delFeed(FeedDelDto dto) { //쿼리스트링
+        log.info("dto : {}", dto);
+        return service.delFeed(dto);
+    }
+    /*
+    -- iuser가 쓴 feed가 맞는지 확인한다
+    -- 만약 쓴 글이 아니면 ResVo(0) 리턴
+    -- 쓴 글이면 해당 하는 feed에 달린
+    -- 댓글, 좋아요,사진들을 먼저 삭제 한다.
+    -- feed 삭제 처리 > ResVo(1) 리턴
+    -- forignkey 걸려있어서  바로 feed삭제 불가
+     */
 
+    @DeleteMapping("/pics")
+    public ResVo delFeedPicsAll(FeedPicsDelDto dto) {
+        return service.delFeedPicsAll(dto);
     }
 }

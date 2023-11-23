@@ -33,5 +33,33 @@
         ORDER BY A.ifeed DESC
         LIMIT #{startIdx}, #{rowCount}
     </select>
+    
+    <select id="feedConfirm">
+        SELECT iuser
+        FROM t_feed
+        WHERE ifeed = #{ifeed}
+    </select>
+
+    <delete id="delFeed">
+        DELETE FROM t_feed
+        WHERE ifeed = #{ifeed}
+        AND iuser = #{iuser}
+    </delete>
+
+    <delete id="delFav">
+        DELETE FROM t_feed_fav
+        WHERE ifeed = #{ifeed}
+    </delete>
+    
+    <delete id="delpics">
+        DELETE FROM t_feed_pics
+        WHERE ifeed = #{ifeed}
+    </delete>
+
+    <delete id="delFeedByComment">
+        DELETE FROM t_feed_comment
+        WHERE ifeed = #{ifeed}
+    </delete>
+
 
 </mapper>

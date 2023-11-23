@@ -87,4 +87,21 @@ public class FeedService {
         int affectedRows = commentMapper.delComment(dto);
         return new ResVo(affectedRows);
     }
+
+    public ResVo delFeed (FeedDelDto dto) {
+        int result = mapper.feedConfirm(dto);
+        if(result == dto.getIuser()){
+            mapper.delFav(dto);
+            mapper.delpics(dto);
+            mapper.delFeedByComment(dto);
+            mapper.delFeed(dto);
+            return new ResVo(1);
+        }
+        return new ResVo(0);
+    }
+
+    public ResVo delFeedPicsAll(FeedPicsDelDto dto) {
+        int result = picsMapper.delFeedPicsAll(dto);
+        return new ResVo(result);
+    }
 }

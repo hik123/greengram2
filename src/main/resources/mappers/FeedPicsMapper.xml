@@ -15,4 +15,9 @@
         SELECT pic FROM t_feed_pics
         WHERE ifeed = #{ifeed}
     </select>
+
+    <delete id="delFeedPicsAll">
+        DELETE FROM t_feed_pics
+        WHERE ifeed = #{ifeed}
+    </delete>
 </mapper>

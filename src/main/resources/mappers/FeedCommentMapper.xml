@@ -21,6 +21,8 @@
         LIMIT #{startIdx}, #{rowCount}
     </select>
 
+
+
     <delete id="delComment">
         DELETE FROM t_feed_comment
         WHERE ifeed_comment = #{ifeedComment}
